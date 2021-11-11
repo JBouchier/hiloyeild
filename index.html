@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
+        * {
+            user-select: none;
+            margin: 0;
+            padding: 0;
+            font-family: Inter, sans-serif;
+            font-weight: 800;
+            text-align: center;
+            color: white;
+            font-size: 40pt;
+        }
+        body {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: rgb(42, 48, 42);
+        }
+        #display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgb(171, 192, 170);
+            border-radius: 15px;
+            padding: 10px;
+        }
+        #buttons {
+            display: flex;
+        }
+        .button {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            margin: 10px;
+            min-width: 200px;
+            height: 200px;
+            background: #ff5a5a;
+            border-radius: 10px;
+        }
+        .button:hover {
+            opacity: 70%;
+        }
+        .display-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: calc(100% - 20px);
+            background: rgb(111, 124, 112);
+            margin: 10px !important;
+            border-radius: 10px;
+            padding: 20px 0;
+        }
+        #top-display {
+            font-size: 18pt;
+        }
+    </style>
+</head>
+<body>
+    <div id="display">
+        <div class="display-area">
+            <div id="top-display"></div>
+        </div>
+        <div class="display-area">
+            <div id="balance-display"></div>
+        </div>
+        <div class="display-area">
+            <div id="bet-display"></div>
+        </div>
+        <div id="buttons">
+            <div onclick="onWin()" id="win-button" style="background: #0a7843;" class="button">WIN</div>
+            <div onclick="onLose()" id="lose-button" class="button">LOSE</div>
+        </div>
+    </div>
+</body>
+<script>
+    // Create our number formatter.
+    let formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    let count = 0;
+    const base_bet = 10;
+    let bet = base_bet;
+    let balance = 20000;
+    let top_val = balance;
+    const bet_dis = document.getElementById("bet-display");
+    const bal_dis = document.getElementById("balance-display");
+    const top_dis = document.getElementById("top-display");
+    bet_dis.innerText = formatter.format(bet);
+    bal_dis.innerText = formatter.format(balance);
+    top_dis.innerText = "Highest: "+formatter.format(top_val);
+    const multi = 1.63;
+    function onWin() {
+        if (--count < 1) count=1;
+        balance+=bet;
+        if (balance>top_val) top_val=balance;
+        bet = getBet();
+        bet_dis.innerText = formatter.format(bet);
+        bal_dis.innerText = formatter.format(balance);
+        top_dis.innerText = "Highest: "+formatter.format(top_val);
+    }
+
+    function getBet() {
+        let r =  (top_val-balance) / Math.max(1,Math.floor((count+1) * 0.3));
+        return r < base_bet ? base_bet : r;
+    }
+
+    function onLose() {
+        count++;
+        balance-=bet;
+        bet = getBet();
+        bet_dis.innerText = formatter.format(bet);
+        bal_dis.innerText = formatter.format(balance);
+    }
+</script>
+</html>
